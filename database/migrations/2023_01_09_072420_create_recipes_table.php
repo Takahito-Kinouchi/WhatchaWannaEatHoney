@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('recipe_url_id')->constrained();
             $table->string('title');
             $table->string('comment');
+            $table->string('serving');
             $table->integer('review_count');
             $table->timestamps();
         });
