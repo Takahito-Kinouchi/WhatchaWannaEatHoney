@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('recipe_urls', function (Blueprint $table) {
+        Schema::create('ingredients', function (Blueprint $table) {
             $table->id();
-            $table->string(('url'));
+            $table->foreignId('recipe_id')->constrained();
+            $table->string('ingredient_name');
+            $table->string('quantity');
+            $table->string('serving');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('recipe_urls');
+        Schema::dropIfExists('ingredients');
     }
 };

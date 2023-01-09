@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ingredients_lists', function (Blueprint $table) {
+        Schema::create('recipe_urls', function (Blueprint $table) {
             $table->id();
             $table->foreignId('recipe_id')->constrained();
-            $table->string('name');
-            $table->string('quantity');
-            $table->string('serving');
+            $table->string(('url'));
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ingredients_lists');
+        Schema::dropIfExists('recipe_urls');
     }
 };
