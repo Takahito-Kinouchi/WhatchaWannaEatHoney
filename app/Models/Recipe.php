@@ -23,6 +23,6 @@ class Recipe extends Model
 
     public function ingredients()
     {
-        return $this->hasMany(Ingredient::class);
+        return $this->hasMany(Ingredient::class, 'recipe_url_id', 'recipe_url_id');
     }
 }
