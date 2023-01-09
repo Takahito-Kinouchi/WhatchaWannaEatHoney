@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('recipe_urls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('recipe_id')->constrained();
+            $table->string('recipe_id')->unique();
             $table->string(('url'));
             $table->timestamps();
         });
