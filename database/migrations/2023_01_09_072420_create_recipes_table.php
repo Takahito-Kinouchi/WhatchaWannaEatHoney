@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('recipe_url_id')->constrained();
             $table->string('title');
             $table->string('comment');
             $table->integer('review_count');

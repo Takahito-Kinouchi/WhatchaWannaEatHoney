@@ -16,6 +16,6 @@ class RecipeUrl extends Model
 
     public function recipeDetails()
     {
-        return $this->belongsTo(Recipe::class);
+        return $this->hasOne(Recipe::class);
     }
 }
