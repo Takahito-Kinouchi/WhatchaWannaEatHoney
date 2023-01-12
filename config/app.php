@@ -16,6 +16,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'line_channel_access_token' => env('LINE_MESSAGE_CHANNEL_TOKEN'),
+    'line_channel_secret' => env('LINE_MESSAGE_CHANNEL_SECRET'),
 
     /*
     |--------------------------------------------------------------------------

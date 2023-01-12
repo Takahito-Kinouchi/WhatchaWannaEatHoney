@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Recipe;
-use App\Crawler\Crawler;
-use App\Models\RecipeUrl;
+use App\Services\Crawler;
 use App\Models\Ingredient;
 use Illuminate\Console\Command;
 
@@ -32,23 +31,43 @@ class ScrapeRecipe extends Command
     public function handle()
     {
         $crawler = new Crawler();
-        $mainUrl = $crawler->getMainUrl();
-        $recipeUrl = new RecipeUrl();
-        $recipeUrls = $recipeUrl->all();
-        $recipeInfo = [];
-        $ingredientsList = [];
-        $bar = $this->output->createProgressBar(count($recipeUrls));
-        foreach ($recipeUrls as $recipeUrl) {
-            $recipeUrlId = $recipeUrl->id;
-            $node = \Goutte::request('GET', $mainUrl . $recipeUrl->url)
-            ->filter('div.recipe_show_wrapper');
-            $recipeInfo[] = $crawler->scrapeRecipe($recipeUrlId, $node);
-            $ingredientsList = array_merge($ingredientsList, $crawler->scrapeIngredients($recipeUrlId, $node));
+
+        $maxPage = $crawler->getCategoryPageCount();
+
+        $recipeUrls = [];
+
+        $bar = $this->output->createProgressBar($maxPage);
+
+        for ($pageNum = 1; $pageNum <= $maxPage; $pageNum++) {
+            $recipeUrls = array_merge($recipeUrls, $crawler->scrapeCategory($pageNum));
             $bar->advance();
-            sleep(1);
         }
-        Recipe::upsert($recipeInfo, 'recipe_url_id');
-        Ingredient::upsert($ingredientsList, 'recipe_url_id');
+        $bar->finish();
+
+        $this->info("\n" . 'Recipe Urls Scraped Successfully.');
+
+        $bar = $this->output->createProgressBar(count($recipeUrls));
+
+        foreach ($recipeUrls as $recipeUrl) {
+            $node = \Goutte::request('GET', $recipeUrl)
+                ->filter('div.recipe_show_wrapper');
+
+            $scrapedRecipeDetails = $crawler->scrapeRecipe($node);
+            $recipe = new Recipe($scrapedRecipeDetails);
+            $recipe->url = $recipeUrl;
+
+            $ingredientsList = collect($crawler->scrapeIngredients($node))->map(function ($ingredientDetails) {
+                return new Ingredient($ingredientDetails);
+            });
+            $recipe->setRelation('ingredients', $ingredientsList);
+
+            $recipe->save();
+            $recipe->ingredients->each(function (Ingredient $ingredient) use ($recipe) {
+                $ingredient->recipe_id = $recipe->id;
+                $ingredient->save();
+            });
+            $bar->advance();
+        }
         $bar->finish();
         $this->info("\n" . 'Recipe Scraped Successfully.');
         return Command::SUCCESS;
