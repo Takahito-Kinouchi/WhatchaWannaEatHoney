@@ -26,12 +26,12 @@ class LineBotServiceController extends Controller
             });
         }
         
-        $recipesMatchedUrls = $recipesMatched
+        $suggestedRecipes = $recipesMatched
             ->orderByDesc('review_count')
             ->take(15)
             ->get()
-            ->random(3);
+            ->random(5);
 
-        LineBotService::suggestRecipes($messageEvent['replyToken'], $recipesMatchedUrls);
+        LineBotService::suggestRecipes($messageEvent['replyToken'], $suggestedRecipes);
     }
 }

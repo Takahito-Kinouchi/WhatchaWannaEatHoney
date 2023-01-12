@@ -35,29 +35,26 @@ class ScrapeRecipe extends Command
         $maxPage = $crawler->getCategoryPageCount();
 
         $recipeUrls = [];
-
         $bar = $this->output->createProgressBar($maxPage);
-
         for ($pageNum = 1; $pageNum <= $maxPage; $pageNum++) {
             $recipeUrls = array_merge($recipeUrls, $crawler->scrapeCategory($pageNum));
             $bar->advance();
         }
         $bar->finish();
-
         $this->info("\n" . 'Recipe Urls Scraped Successfully.');
 
         $bar = $this->output->createProgressBar(count($recipeUrls));
-
         foreach ($recipeUrls as $recipeUrl) {
             $node = \Goutte::request('GET', $recipeUrl)
                 ->filter('div.recipe_show_wrapper');
 
-            $scrapedRecipeDetails = $crawler->scrapeRecipe($node);
-            $recipe = new Recipe($scrapedRecipeDetails);
+            $scrapedRecipeDetail = $crawler->scrapeRecipe($node);
+            $recipe = new Recipe($scrapedRecipeDetail);
             $recipe->url = $recipeUrl;
 
-            $ingredientsList = collect($crawler->scrapeIngredients($node))->map(function ($ingredientDetails) {
-                return new Ingredient($ingredientDetails);
+            $scrapedIngredientDetails = $crawler->scrapeIngredients($node);
+            $ingredientsList = collect($scrapedIngredientDetails)->map(function ($ingredientDetail) {
+                return new Ingredient($ingredientDetail);
             });
             $recipe->setRelation('ingredients', $ingredientsList);
 

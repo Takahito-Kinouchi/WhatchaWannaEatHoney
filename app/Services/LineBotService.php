@@ -26,7 +26,7 @@ class LineBotService
         $recipeList->each(function (Recipe $recipe) use ($messages) {
             // $titleMessage = new TextMessageBuilder($recipe->title);
             // $messages->add($titleMessage);
-            $urlMessage = new TextMessageBuilder($recipe->url);
+            $urlMessage = new TextMessageBuilder($recipe->title);
             $messages->add($urlMessage);
         });
 

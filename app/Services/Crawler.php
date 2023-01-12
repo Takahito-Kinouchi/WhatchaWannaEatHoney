@@ -16,7 +16,7 @@ final class Crawler
      *
      * @var int
      */
-    private int $categoryPageCount = 1000;
+    private int $categoryPageCount = 10;
 
     /**
      *
