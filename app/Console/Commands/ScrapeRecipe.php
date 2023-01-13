@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Console\Commands;
 
@@ -44,25 +45,27 @@ class ScrapeRecipe extends Command
         $this->info("\n" . 'Recipe Urls Scraped Successfully.');
 
         $bar = $this->output->createProgressBar(count($recipeUrls));
+        $bar->setFormat('very_verbose');
         foreach ($recipeUrls as $recipeUrl) {
             $node = \Goutte::request('GET', $recipeUrl)
                 ->filter('div.recipe_show_wrapper');
 
             $scrapedRecipeDetail = $crawler->scrapeRecipe($node);
+            if ($scrapedRecipeDetail['review_count'] <= 30) {
+                continue;
+            }
             $recipe = new Recipe($scrapedRecipeDetail);
             $recipe->url = $recipeUrl;
+            $recipe->save();
 
             $scrapedIngredientDetails = $crawler->scrapeIngredients($node);
-            $ingredientsList = collect($scrapedIngredientDetails)->map(function ($ingredientDetail) {
-                return new Ingredient($ingredientDetail);
-            });
-            $recipe->setRelation('ingredients', $ingredientsList);
-
-            $recipe->save();
-            $recipe->ingredients->each(function (Ingredient $ingredient) use ($recipe) {
+            $recipe->setRelation('ingredients', $scrapedIngredientDetails);
+            foreach ($scrapedIngredientDetails as $ingredientDetail) {
+                $ingredient = new Ingredient($ingredientDetail);
                 $ingredient->recipe_id = $recipe->id;
                 $ingredient->save();
-            });
+            }
+
             $bar->advance();
         }
         $bar->finish();

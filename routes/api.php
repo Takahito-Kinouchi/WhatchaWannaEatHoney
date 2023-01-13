@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\LineBotServiceController;
+use LINE\LINEBot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use App\Http\Controllers\LineBotServiceController;
 
 /*
 |--------------------------------------------------------------------------

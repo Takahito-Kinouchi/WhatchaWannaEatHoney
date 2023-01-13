@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -16,7 +17,7 @@ final class Crawler
      *
      * @var int
      */
-    private int $categoryPageCount = 10;
+    private int $categoryPageCount = 1000;
 
     /**
      *
@@ -74,7 +75,7 @@ final class Crawler
         $ingredientList = $ingredientsNode->each(function ($row) {
             if ($row->filter('div.ingredient_name')->count()) {
                 return [
-                    'name' => $row->filter('div.ingredient_name > span.name')->text(),
+                    'name' => $row->filter('div.ingredient_name > span.name')->text()
                 ];
             }
         });
