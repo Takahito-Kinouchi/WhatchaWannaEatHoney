@@ -61,7 +61,7 @@ final class LineBotService
      *
      * @return void
      */
-    public function showRandomRecipe(string $replyToken, Builder $randomRecipes): void
+    public function showRandomRecipe(string $replyToken, collection $randomRecipes): void
     {
         $messages = new MultiMessageBuilder();
         $messages->add(new TextMessageBuilder('ランダムなレシピを紹介します!'));

@@ -30,7 +30,8 @@ final class LineBotServiceController extends Controller
         if ($ingredientKeyWords === 'おまかせ') {
             $suggestedRecipes = Recipe::query()
             ->inRandomOrder()
-            ->take(3);
+            ->take(3)
+            ->get();
             $lineBot->showRandomRecipe($replyToken, $suggestedRecipes);
             return;
         }
