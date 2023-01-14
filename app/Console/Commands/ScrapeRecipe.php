@@ -46,6 +46,7 @@ class ScrapeRecipe extends Command
 
         $bar = $this->output->createProgressBar(count($recipeUrls));
         $bar->setFormat('very_verbose');
+
         foreach ($recipeUrls as $recipeUrl) {
             $node = \Goutte::request('GET', $recipeUrl)
                 ->filter('div.recipe_show_wrapper');
