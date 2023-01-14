@@ -49,7 +49,13 @@ class ScrapeRecipe extends Command
         $bar = $this->output->createProgressBar(count($recipeUrls));
         $bar->setFormat('very_verbose');
 
+        $existingRecipeUrls = Recipe::query()->select('url')->get();
         foreach ($recipeUrls as $recipeUrl) {
+            if ($existingRecipeUrls->contains($recipeUrl)) {
+                $bar->advance();
+                continue;
+            }
+            
             $node = \Goutte::request('GET', $recipeUrl)
                 ->filter('div.recipe_show_wrapper');
 
