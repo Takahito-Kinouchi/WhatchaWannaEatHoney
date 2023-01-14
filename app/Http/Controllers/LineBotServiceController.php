@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use App\Services\LineBotService;
+use App\Http\Requests\RecipeSuggestRequest;
 
 final class LineBotServiceController extends Controller
 {
@@ -16,7 +17,7 @@ final class LineBotServiceController extends Controller
      *
      * @return void
      */
-    public function suggestRecipes(Request $request)
+    public function suggestRecipes(RecipeSuggestRequest $request)
     {
         $lineBot = new LineBotService();
 
@@ -24,7 +25,7 @@ final class LineBotServiceController extends Controller
             return $event['type'] === 'message';
         });
         $replyToken = $messageEvent['replyToken'];
-
+        return $request;
         $ingredientKeyWords = mb_convert_kana($messageEvent['message']['text'], 's');
         
         if ($ingredientKeyWords === 'おまかせ') {
