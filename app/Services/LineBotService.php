@@ -7,6 +7,7 @@ use LINE\LINEBot;
 use App\Models\Recipe;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -60,7 +61,7 @@ final class LineBotService
      *
      * @return void
      */
-    public function showRandomRecipe(string $replyToken, Recipe $randomRecipes): void
+    public function showRandomRecipe(string $replyToken, Builder $randomRecipes): void
     {
         $messages = new MultiMessageBuilder();
         $messages->add(new TextMessageBuilder('ランダムなレシピを紹介します!'));

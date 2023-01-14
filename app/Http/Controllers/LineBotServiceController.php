@@ -27,11 +27,10 @@ final class LineBotServiceController extends Controller
         $replyToken = $messageEvent['replyToken'];
 
         $ingredientKeyWords = mb_convert_kana($messageEvent['message']['text'], 's');
-        
         if ($ingredientKeyWords === 'おまかせ') {
             $suggestedRecipes = Recipe::query()
-                ->inRandomOrder()
-                ->take(3);
+            ->inRandomOrder()
+            ->take(3);
             $lineBot->showRandomRecipe($replyToken, $suggestedRecipes);
             return;
         }
