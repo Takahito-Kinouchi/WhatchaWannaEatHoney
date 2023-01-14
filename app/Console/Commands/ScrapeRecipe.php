@@ -51,7 +51,7 @@ class ScrapeRecipe extends Command
                 ->filter('div.recipe_show_wrapper');
 
             $scrapedRecipeDetail = $crawler->scrapeRecipe($node);
-            if ($scrapedRecipeDetail['review_count'] <= 15) {
+            if ($scrapedRecipeDetail['review_count'] <= 0) {
                 $bar->advance();
                 continue;
             }
