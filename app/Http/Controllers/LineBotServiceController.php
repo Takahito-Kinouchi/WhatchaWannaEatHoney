@@ -16,20 +16,22 @@ final class LineBotServiceController extends Controller
      *
      * @return void
      */
-    public function suggestRecipes(Request $request): void
+    public function suggestRecipes(Request $request)
     {
         $lineBot = new LineBotService();
 
         $messageEvent = $request->collect('events')->first(function ($event) {
             return $event['type'] === 'message';
         });
+        $replyToken = $messageEvent['replyToken'];
+
         $ingredientKeyWords = mb_convert_kana($messageEvent['message']['text'], 's');
         
         if ($ingredientKeyWords === 'おまかせ') {
             $suggestedRecipe = Recipe::query()
                 ->inRandomOrder()
                 ->first();
-            $lineBot->randomRecipe($messageEvent['replyToken'], $suggestedRecipe);
+            $lineBot->randomRecipe($replyToken, $suggestedRecipe);
             return;
         }
 
@@ -43,12 +45,25 @@ final class LineBotServiceController extends Controller
             });
         }
 
+        $recipeCount = $recipesMatched->orderByDesc('review_count')->count();
+
+        if ($recipeCount <= 0) {
+            $lineBot->noRecipe($messageEvent['replyToken']);
+            return;
+        }
+
         $suggestedRecipes = $recipesMatched
             ->orderByDesc('review_count')
-            ->take(15)
-            ->get()
-            ->random(4);
+            ->when(15 <= $recipeCount, function ($query) {
+                return $query->take(15)->get()->random(3);
+            })
+            ->when(3 < $recipeCount && $recipeCount < 15, function ($query) {
+                return $query->get()->random(3);
+            })
+            ->when(0 < $recipeCount && $recipeCount <= 3, function ($query) {
+                return $query->get();
+            });
 
-        $lineBot->suggestRecipes($messageEvent['replyToken'], $suggestedRecipes);
+        $lineBot->suggestRecipes($replyToken, $suggestedRecipes);
     }
 }
