@@ -37,10 +37,12 @@ class ScrapeRecipe extends Command
 
         $recipeUrls = [];
         $bar = $this->output->createProgressBar($maxPage);
+
         for ($pageNum = 1; $pageNum <= $maxPage; $pageNum++) {
             $recipeUrls = array_merge($recipeUrls, $crawler->scrapeCategory($pageNum));
             $bar->advance();
         }
+        
         $bar->finish();
         $this->info("\n" . 'Recipe Urls Scraped Successfully.');
 
@@ -52,16 +54,20 @@ class ScrapeRecipe extends Command
                 ->filter('div.recipe_show_wrapper');
 
             $scrapedRecipeDetail = $crawler->scrapeRecipe($node);
-            if ($scrapedRecipeDetail['review_count'] <= 0) {
+
+            if ($scrapedRecipeDetail['review_count'] <= 5) {
                 $bar->advance();
                 continue;
             }
+
             $recipe = new Recipe($scrapedRecipeDetail);
             $recipe->url = $recipeUrl;
             $recipe->save();
 
             $scrapedIngredientDetails = $crawler->scrapeIngredients($node);
+
             $recipe->setRelation('ingredients', $scrapedIngredientDetails);
+
             foreach ($scrapedIngredientDetails as $ingredientDetail) {
                 $ingredient = new Ingredient($ingredientDetail);
                 $ingredient->recipe_id = $recipe->id;
