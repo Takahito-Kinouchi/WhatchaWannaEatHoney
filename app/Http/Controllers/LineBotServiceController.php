@@ -25,7 +25,7 @@ final class LineBotServiceController extends Controller
             return $event['type'] === 'message';
         });
         $replyToken = $messageEvent['replyToken'];
-        return $request;
+
         $ingredientKeyWords = mb_convert_kana($messageEvent['message']['text'], 's');
         
         if ($ingredientKeyWords === 'おまかせ') {
