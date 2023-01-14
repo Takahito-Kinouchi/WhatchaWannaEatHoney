@@ -31,7 +31,7 @@ final class LineBotServiceController extends Controller
             $suggestedRecipe = Recipe::query()
                 ->inRandomOrder()
                 ->first();
-            $lineBot->randomRecipe($replyToken, $suggestedRecipe);
+            $lineBot->showRandomRecipe($replyToken, $suggestedRecipe);
             return;
         }
 
@@ -48,7 +48,7 @@ final class LineBotServiceController extends Controller
         $recipeCount = $recipesMatched->orderByDesc('review_count')->count();
 
         if ($recipeCount <= 0) {
-            $lineBot->noRecipe($messageEvent['replyToken']);
+            $lineBot->noRecipeMessage($messageEvent['replyToken']);
             return;
         }
 

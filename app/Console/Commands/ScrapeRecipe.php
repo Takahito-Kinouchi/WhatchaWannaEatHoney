@@ -51,7 +51,7 @@ class ScrapeRecipe extends Command
                 ->filter('div.recipe_show_wrapper');
 
             $scrapedRecipeDetail = $crawler->scrapeRecipe($node);
-            if ($scrapedRecipeDetail['review_count'] <= 30) {
+            if ($scrapedRecipeDetail['review_count'] <= 15) {
                 continue;
             }
             $recipe = new Recipe($scrapedRecipeDetail);
