@@ -52,6 +52,7 @@ class ScrapeRecipe extends Command
 
             $scrapedRecipeDetail = $crawler->scrapeRecipe($node);
             if ($scrapedRecipeDetail['review_count'] <= 15) {
+                $bar->advance();
                 continue;
             }
             $recipe = new Recipe($scrapedRecipeDetail);
