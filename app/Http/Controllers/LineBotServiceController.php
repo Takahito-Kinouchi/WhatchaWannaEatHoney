@@ -49,7 +49,7 @@ final class LineBotServiceController extends Controller
         $recipeCount = $recipesMatched->orderByDesc('review_count')->count();
 
         if ($recipeCount <= 0) {
-            $lineBot->noRecipeMessage($messageEvent['replyToken']);
+            $lineBot->noRecipeMessage($replyToken, $ingredientKeyWordList);
             return;
         }
 

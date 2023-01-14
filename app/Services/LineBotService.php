@@ -79,8 +79,8 @@ final class LineBotService
      *
      * @return void
      */
-    public function noRecipeMessage(string $replyToken): void
+    public function noRecipeMessage(string $replyToken, array $ingredientKeyWordList): void
     {
-        $this->lineBot->replyText($replyToken, '食材リストにマッチするレシピが見つかりませんでした...');
+        $this->lineBot->replyText($replyToken, implode(' ', $ingredientKeyWordList) . ' を使うレシピが見つかりませんでした...');
     }
 }
