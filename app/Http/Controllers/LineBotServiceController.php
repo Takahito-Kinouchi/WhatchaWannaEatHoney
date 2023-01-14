@@ -65,6 +65,6 @@ final class LineBotServiceController extends Controller
                 return $query->get();
             });
 
-        $lineBot->suggestRecipes($replyToken, $suggestedRecipes);
+        $lineBot->suggestRecipes($replyToken, $ingredientKeyWordList, $suggestedRecipes);
     }
 }

@@ -42,10 +42,10 @@ final class LineBotService
      *
      * @return void
      */
-    public function suggestRecipes(string $replyToken, Collection $recipeList): void
+    public function suggestRecipes(string $replyToken, array $ingredientKeyWordList, Collection $recipeList): void
     {
         $messages = new MultiMessageBuilder();
-        $messages->add(new TextMessageBuilder('その食材リストで作れるおすすめレシピを' . $recipeList->count() . '件送ります!'));
+        $messages->add(new TextMessageBuilder(implode(' ', $ingredientKeyWordList) . ' を使うおすすめレシピを' . $recipeList->count() . '件送ります!'));
 
         foreach ($recipeList as $recipe) {
             $urlMessage = new TextMessageBuilder($recipe->url);
